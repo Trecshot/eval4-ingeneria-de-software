@@ -2,7 +2,7 @@
 Sistema de Gestión Comercial, Inventario y Distribución (DistriGest)
 Firma Desarrolladora: Bomcode
 Caso de Estudio: DistriSur Araucanía SpA - Inacap Sede Temuco
-Evaluación 3: Prototipo Funcional en Python (Arquitectura Modular)
+Evaluación 4: Modelo de Dominio, Vistas Modulares y Plan de Pruebas
 Controlador Principal de Aplicación
 """
 import customtkinter as ctk

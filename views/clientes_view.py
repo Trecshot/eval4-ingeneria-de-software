@@ -6,34 +6,13 @@ Estándar: WCAG 2.1 Nivel AA y Reglas de Proximidad / Usabilidad
 
 import customtkinter as ctk
 from tkinter import messagebox
+from models.clientes import validar_rut_modulo11
 from theme import *
 
 
 def validar_rut_chileno(rut_str: str) -> bool:
     """Valida el dígito verificador módulo 11 de un RUT nacional chileno."""
-    rut_limpio = rut_str.replace(".", "").replace("-", "").strip().upper()
-    if len(rut_limpio) < 2:
-        return False
-    cuerpo = rut_limpio[:-1]
-    dv = rut_limpio[-1]
-    if not cuerpo.isdigit():
-        return False
-    
-    suma = 0
-    multiplo = 2
-    for c in reversed(cuerpo):
-        suma += int(c) * multiplo
-        multiplo = 2 if multiplo == 7 else multiplo + 1
-        
-    esperado_num = 11 - (suma % 11)
-    if esperado_num == 11:
-        esperado_dv = '0'
-    elif esperado_num == 10:
-        esperado_dv = 'K'
-    else:
-        esperado_dv = str(esperado_num)
-        
-    return dv == esperado_dv
+    return validar_rut_modulo11(rut_str)
 
 
 class FormularioFichaCliente(ctk.CTkFrame):

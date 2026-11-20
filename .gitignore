@@ -5,6 +5,7 @@ ENV/
 
 # Bytecode de Python y Caché
 __pycache__/
+.pytest_cache/
 *.py[cod]
 *$py.class
 

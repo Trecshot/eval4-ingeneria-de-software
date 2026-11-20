@@ -1,6 +1,6 @@
 # DistriGest - Sistema de Gestión Comercial e Inventario
 
-**Prototipo Modular de Interfaz (Evaluación 3 - Ingeniería de Software)**  
+**Modelo de Dominio, Interfaz Modular y Plan de Pruebas (Evaluación 4 - Ingeniería de Software)**  
 *Firma Desarrolladora: Bomcode | Cliente: DistriSur Araucanía SpA*
 
 ---
@@ -48,6 +48,11 @@ pip install -r requirements.txt
 ### Paso 4: Inicialización del Sistema
 ```powershell
 python main.py
+```
+
+### Paso 5: Ejecución de Pruebas Unitarias (`pytest`)
+```powershell
+python -m pytest -v
 ```
 
 ---

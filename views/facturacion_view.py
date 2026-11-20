@@ -4,6 +4,7 @@ Requerimiento Cubierto: RF-17 (Emisión y Timbrado Tributario Electrónico)
 """
 import customtkinter as ctk
 from tkinter import messagebox
+from models.facturacion import DocumentoTributario, Pedido
 import theme as th
 
 
@@ -67,16 +68,18 @@ class FacturacionView(ctk.CTkFrame):
 
     def _confirmar_emision_critica(self):
         tipo = self.cb_dte.get()
-        pedido = self.cb_pedidos.get().split(" - ")[0]
-        
+        pedido_id = self.cb_pedidos.get().split(" - ")[0]
+        pedido = Pedido(idPedido=pedido_id, montoNeto=227500)
+        pedido.calcularTotales()
+        dte = DocumentoTributario(idDte=1, tipoDocumento=tipo, pedido=pedido)
+
         confirmacion = messagebox.askyesno(
             "Acción Crítica Tributaria",
-            f"¿Confirma la emisión formal del documento '{tipo}' ante el Servicio de Impuestos Internos para el {pedido}?\n\nEsta transacción genera timbraje fiscal definitivo."
+            f"¿Confirma la emisión formal del documento '{tipo}' ante el Servicio de Impuestos Internos para el {pedido_id}?\n\nEsta transacción genera timbraje fiscal definitivo."
         )
-        
-        if confirmacion:
-            folio = 104928
+
+        if dte.emitirAnteSii(confirmado=confirmacion):
             messagebox.showinfo(
                 "Emisión Exitosa",
-                f"Documento timbrado correctamente ante el SII.\nTipo: {tipo}\nFolio DTE: {folio}\nEstado: XML firmado y despachado."
+                f"Documento timbrado correctamente ante el SII.\nTipo: {dte.tipoDocumento}\nFolio DTE: {dte.folioSii}\nEstado: {dte.estadoSii}."
             )

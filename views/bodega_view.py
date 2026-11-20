@@ -80,25 +80,39 @@ class BodegaView(ctk.CTkFrame):
         entry.grid(row=1, column=col, padx=8, pady=(0, 10))
         return entry
 
+    @staticmethod
+    def calcularDiscrepancias(cant_comprada: int, cant_recibida: int) -> tuple[int, str, str]:
+        """
+        Calcula la discrepancia entre cantidad comprada y recibida (RF-08).
+        Retorna (diferencia, texto_estado, color_hex) cubriendo las 3 ramas:
+        - diferencia < 0: faltante (rojo)
+        - diferencia == 0: conforme (verde)
+        - diferencia > 0: excedente (amarillo)
+        """
+        dif = int(cant_recibida) - int(cant_comprada)
+        estado_dif = f"DIFERENCIA: {dif} unidades"
+        if dif < 0:
+            return dif, f"{estado_dif} (Faltante detectado - Notificación a Adquisiciones)", th.COLOR_DANGER
+        if dif > 0:
+            return dif, f"{estado_dif} (Excedente no regularizado)", th.COLOR_WARNING
+        return dif, f"{estado_dif} (Conforme al 100%)", th.COLOR_SUCCESS
+
     def _procesar_recepcion(self):
         try:
             esp = int(self.in_cant_oc.get())
             rec = int(self.in_cant_rec.get())
-            dif = rec - esp
+            dif, estado_dif, color_msg = self.calcularDiscrepancias(esp, rec)
             lote = self.in_lote.get()
             prod = self.in_sku.get()
-            
-            estado_dif = f"DIFERENCIA: {dif} unidades"
-            if dif < 0:
-                color_msg = th.COLOR_DANGER
-                estado_dif += " (Faltante detectado - Notificación a Adquisiciones)"
-            elif dif > 0:
-                color_msg = th.COLOR_WARNING
-                estado_dif += " (Excedente no regularizado)"
-            else:
-                color_msg = th.COLOR_SUCCESS
-                estado_dif += " (Conforme al 100%)"
-                
+
+            if dif != 0:
+                confirmar = messagebox.askyesno(
+                    "Confirmar Recepción con Descuadre",
+                    f"Se detectó una diferencia de {dif} unidades para {prod} (Lote {lote}).\n¿Desea asentar la recepción con discrepancia?",
+                )
+                if not confirmar:
+                    return
+
             self.lbl_resultado_rec.configure(
                 text=f"Recepción procesada: {prod} | Lote: {lote} | {estado_dif}",
                 text_color=color_msg
